@@ -1,0 +1,191 @@
+function [J grad] = nnCostFunction(nn_params, ...
+                                   input_layer_size, ...
+                                   hidden_layer_size, ...
+                                   num_labels, ...
+                                   X, y, lambda)
+%NNCOSTFUNCTION Implements the neural network cost function for a two layer
+%neural network which performs classification
+%   [J grad] = NNCOSTFUNCTON(nn_params, hidden_layer_size, num_labels, ...
+%   X, y, lambda) computes the cost and gradient of the neural network. The
+%   parameters for the neural network are "unrolled" into the vector
+%   nn_params and need to be converted back into the weight matrices. 
+% 
+%   The returned parameter grad should be a "unrolled" vector of the
+%   partial derivatives of the neural network.
+%
+
+% Reshape nn_params back into the parameters Theta1 and Theta2, the weight matrices
+% for our 2 layer neural network
+
+% --- dimensions ----
+% y :               5000 x 1
+% X :               5000 x 401 (after adding one coulmn)
+% Theta1 :  25 x 401
+% Theta2 :  10 x 26
+
+Theta1 = reshape(nn_params(1:hidden_layer_size * (input_layer_size + 1)), ...
+                 hidden_layer_size, (input_layer_size + 1));
+
+Theta2 = reshape(nn_params((1 + (hidden_layer_size * (input_layer_size + 1))):end), ...
+                 num_labels, (hidden_layer_size + 1));
+
+% Setup some useful variables
+m = size(X, 1); %5000
+K=size(Theta2,1);;% 10 digits 0,1,...,9 but 0 is represented by 10
+         
+% You need to return the following variables correctly 
+%J = 0;
+
+X = [ ones(m,1) X];
+sum=0;
+sum_regul=0;
+
+%compute first part
+
+for i_m=1:m  
+    for k=1:K
+        y_k_i = y(i_m) == k;            %should be 0 or 1
+        Xi_m=X(i_m,: );                       %1x401
+        a1=Xi_m;                                  %1x401
+        z2=Theta1*a1';                      %25x1
+        a2=[1;sigmoid(z2)];             %26x1
+        z3=Theta2*a2;                       %10x1
+        h_teta_i=sigmoid(z3);   %10x1
+        h_teta_i_k =h_teta_i(k) ;
+        item = -y_k_i*log(h_teta_i_k) -(1-y_k_i)*log(1-h_teta_i_k);
+        sum = sum + item;
+    end
+end
+
+%compute second part - regulation
+L = 3; % total number of layers : one input , one hidden , one output
+s1 = size(Theta1,2) - 1;% 400
+s2 = size(Theta1,1);
+s3=K;
+S = [s1 s2 s3]; %s1=400,s2=25,s3=10i.e. number of units not counting bias)
+
+
+% caution - no need to regulate the first coulm in theta because its bias
+% i.e. 1
+Theta1_no_bias = Theta1(:,2:s1+1);
+Theta2_no_bias = Theta2(:,2:s2+1);
+for l=1:L-1
+    s_l=S(l);
+    for i=1:s_l
+        s_l_plus_1 = S(l+1);
+        for j=1:s_l_plus_1
+            if(l == 1)
+                teta_l_i_j = Theta1_no_bias(j,i);
+            else
+                teta_l_i_j = Theta2_no_bias(j,i);
+            end
+        sum_regul = sum_regul + teta_l_i_j^2;
+        end
+    end
+end
+
+
+J = sum/m +(lambda/2/m)*sum_regul;
+
+
+% backpropagation without regulation !!!!
+
+delta_1_i_j = zeros(size(Theta1));
+delta_2_i_j = zeros(size(Theta2));
+
+y_vec = zeros(K,1);
+ for i_m=1:m
+ % forward propagation
+     Xi_m=X(i_m,: );                           %1x401
+    a1=Xi_m;                                       %1x401
+    z2=Theta1*a1';                           %25x1
+    a2=[1;sigmoid(z2)];                  %26x1
+    z3=Theta2*a2;                            %10x1
+    a3=sigmoid(z3);                        %10x1
+     y_vec (y(i_m))=1; 
+     
+     % back propagation
+    del3 = a3-y_vec;                                                                 % 10x1
+    del2 = (Theta2(:,2:s2+1)'*del3).*sigmoidGradient(z2);     % 10 x 25' * 10x1 ---> 25x1
+     
+    % l =1 i.e. layer 1
+    delta_1_i_j = delta_1_i_j  + del2 * a1; % 25x1 * 1 x 401 --> 25x401 MUST be same as Theta1 because its the gradient
+
+    % l =2 i.e. layer 2
+    delta_2_i_j = delta_2_i_j  + del3 * a2'; % 10x1 * 1x26 ---> 10x26     MUST be same as Theta2 because its the gradient
+    
+    y_vec (y(i_m))=0; 
+ end
+
+lambdaTheta1 =  zeros(size(delta_1_i_j));
+lambdaTheta1(:,2:size(lambdaTheta1,2)) = 
+lambdaTheta2 =  zeros(size(delta_2_i_j));
+
+D_1_i_j = (1/m)*delta_1_i_j + lambdaTheta1;                % 25x401
+D_2_i_j = (1/m)*delta_2_i_j + lambdaTheta2;                % 10x26 
+
+Theta1_grad = D_1_i_j ;
+Theta2_grad = D_2_i_j ;
+
+%Theta1_grad = zeros(size(Theta1));
+%Theta2_grad = zeros(size(Theta2));
+
+% ====================== YOUR CODE HERE ======================
+% Instructions: You should complete the code by working through the
+%               following parts.
+%
+% Part 1: Feedforward the neural network and return the cost in the
+%         variable J. After implementing Part 1, you can verify that your
+%         cost function computation is correct by verifying the cost
+%         computed in ex4.m
+%
+% Part 2: Implement the backpropagation algorithm to compute the gradients
+%         Theta1_grad and Theta2_grad. You should return the partial derivatives of
+%         the cost function with respect to Theta1 and Theta2 in Theta1_grad and
+%         Theta2_grad, respectively. After implementing Part 2, you can check
+%         that your implementation is correct by running checkNNGradients
+%
+%         Note: The vector y passed into the function is a vector of labels
+%               containing values from 1..K. You need to map this vector into a 
+%               binary vector of 1's and 0's to be used with the neural network
+%               cost function.
+%
+%         Hint: We recommend implementing backpropagation using a for-loop
+%               over the training examples if you are implementing it for the 
+%               first time.
+%
+% Part 3: Implement regularization with the cost function and gradients.
+%
+%         Hint: You can implement this around the code for
+%               backpropagation. That is, you can compute the gradients for
+%               the regularization separately and then add them to Theta1_grad
+%               and Theta2_grad from Part 2.
+%
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+% -------------------------------------------------------------
+
+% =========================================================================
+
+% Unroll gradients
+grad = [Theta1_grad(:) ; Theta2_grad(:)];
+
+
+end

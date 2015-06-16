@@ -1,0 +1,59 @@
+function [error_train, error_val] = ...
+    learningCurve(X, y, Xval, yval, lambda)
+%LEARNINGCURVE Generates the train and cross validation set errors needed 
+%to plot a learning curve
+%   [error_train, error_val] = ...
+%       LEARNINGCURVE(X, y, Xval, yval, lambda) returns the train and
+%       cross validation set errors for a learning curve. In particular, 
+%       it returns two vectors of the same length - error_train and 
+%       error_val. Then, error_train(i) contains the training error for
+%       i examples (and similarly for error_val(i)).
+%
+%   In this function, you will compute the train and test errors for
+%   dataset sizes from 1 up to m. In practice, when working with larger
+%   datasets, you might want to do this in larger intervals.
+%
+
+% X                                 12x2 , all ready with x0=1
+% y                                 12x1
+% theta                       2x1  theta0 , theta1
+% lambda                    1x1
+
+% error_train is actually Jtrain ,where 
+% error_train(1) is computed for 1 data point
+% error_train(2) is computed for 2 data points 
+% ....
+% error_train       12x1  
+% error_val            12x1
+
+
+% Number of training examples
+m = size(X, 1);
+
+% You need to return these values correctly
+error_train = zeros(m, 1);
+error_val   = zeros(m, 1);
+
+
+
+ for i_m = 1:m
+     X_1_i_m = X(1:i_m,:);                        % i_m x 1
+     y_1_i_m = y(1:i_m);                           % i_m x 1
+    theta = trainLinearReg(X_1_i_m, y_1_i_m, lambda); % 2x1
+
+    %h = X_1_i_m * theta;                % i_m x 2 * 2x1 --> i_m x 1
+    %e_vec = h - y(1:i_m);                  % i_m x 1
+    
+    
+     [Jtrain_i, ~] = linearRegCostFunction(X_1_i_m, y_1_i_m, theta, 0);
+      % not clear why we need this ,may be because this data set is too small
+     [Jcv_i, ~] = linearRegCostFunction(X_1_i_m, y_1_i_m, theta, 0);
+      Jcv_i = yval-Xval;
+     
+     error_train(i_m) = Jtrain_i;
+     error_val(i_m) = Jcv_i;
+ end     
+
+% =========================================================================
+
+end
