@@ -1,0 +1,17 @@
+function g = sigmoid(z)
+%SIGMOID Compute sigmoid functoon
+%   J = SIGMOID(z) computes the sigmoid of z.
+
+% You need to return the following variables correctly 
+one_ =  ones(size(z));
+g =one_.  /  (one_ + exp(-z));
+
+
+
+
+
+
+
+% =============================================================
+
+end
