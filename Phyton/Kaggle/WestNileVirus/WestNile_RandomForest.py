@@ -4,6 +4,8 @@ import numpy as np
 from sklearn import ensemble, preprocessing
 import matplotlib.pyplot as plt
 from sklearn import cross_validation
+from sklearn import linear_model
+from sklearn.svm import SVC
 
 # ******************************************
 # prepare data : X \ X_test
@@ -72,7 +74,8 @@ X_test['Lat_int'] = X_test.Latitude.apply(int)
 X_test['Long_int'] = X_test.Longitude.apply(int)
 
 # drop address columns
-X = X.drop(['Address', 'AddressNumberAndStreet','WnvPresent', 'NumMosquitos'], axis = 1)
+#X = X.drop(['Address', 'AddressNumberAndStreet','WnvPresent', 'NumMosquitos'], axis = 1)
+X = X.drop(['Address', 'AddressNumberAndStreet','WnvPresent'],  axis = 1)
 X_test = X_test.drop(['Id', 'Address', 'AddressNumberAndStreet'], axis = 1)
 
 # Merge with weather data
@@ -96,23 +99,56 @@ X['Trap'] = lbl.transform(X['Trap'].values)
 X_test['Trap'] = lbl.transform(X_test['Trap'].values)
 
 # drop columns with -1s (DataFrame.ix is used for index access)
+
 X = X.ix[:,(X != -1).any(axis=0)]
 X_test = X_test.ix[:,(X_test != -1).any(axis=0)]
+
+#X.drop(['NumMosquitos'], axis = 1)
+#X_test.drop(['NumMosquitos'], axis = 1)
 
 
 # ******************************************
 # cross validation
 # ******************************************
-X_train, X_test, y_train, y_test = cross_validation.train_test_split(X, y_labels, test_size=0.2, random_state=0)
+X_train, X_test, y_train, y_test = \
+cross_validation.train_test_split(X, y_labels, test_size=0.2, random_state=0)
 
 # ******************************************
 # fit model 
 # ******************************************
 
+
+# used this way because otherwise this info is not used sience it does not exist in test
+sample_weight = X_train['NumMosquitos'];
+
+X.drop(['NumMosquitos'], axis = 1)
+X_test.drop(['NumMosquitos'], axis = 1)
+
 # Random Forest Classifier , n_estimators : number of decision trees
+##precision : 0.35555555555555557 
+##recall : 0.14035087719298245 
+##score : 0.2012578616352201
 #orig cause MemoryError clf = ensemble.RandomForestClassifier(n_jobs=-1, n_estimators=1000, min_samples_split=1)
-clf = ensemble.RandomForestClassifier(n_jobs=-1, n_estimators=800)
-clf.fit(X_train, y_train)
+clf = ensemble.RandomForestClassifier(n_jobs=-1, n_estimators=400)
+clf.fit(X_train, y_train,sample_weight)
+
+
+#logistic regression
+#precision : 0.6666666666666666 
+#recall : 0.07017543859649122 
+#score : 0.12698412698412698
+#clf = linear_model.LogisticRegression()
+#clf.fit(X_train, y_train)
+
+# SVM
+#C=10 , changed also by 5 orders and got about the same
+##precision : 0.2549019607843137 
+##recall : 0.11403508771929824 
+##score : 0.15757575757575756
+##clf = SVC(C,probability=True) # use some like guassian kernel
+##clf.fit(X_train, y_train)
+
+
 
 h_test = clf.predict(X_test)
 
