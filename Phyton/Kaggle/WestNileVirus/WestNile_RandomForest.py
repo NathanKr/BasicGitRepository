@@ -3,9 +3,10 @@ import pandas as pd
 import numpy as np
 from sklearn import ensemble, preprocessing
 import matplotlib.pyplot as plt
+from sklearn import cross_validation
 
 # ******************************************
-# prepare data : X_train \ X_test
+# prepare data : X \ X_test
 # ******************************************
 
 
@@ -30,15 +31,15 @@ def getSepDate(x):
 
 # Load dataset
 root = ".\\Fresh\\"
-# X_train , X_test , sample , weather are type DataFrame 
-X_train = pd.read_csv(root+'train.csv')
+# X , X_test , sample , weather are type DataFrame 
+X = pd.read_csv(root+'train.csv')
 X_test = pd.read_csv(root+'test.csv')
 sample = pd.read_csv(root+'sampleSubmission.csv')
 weather = pd.read_csv(root+'weather.csv')
 
 
 # Get y_labels
-y_labels = X_train.WnvPresent.values
+y_labels = X.WnvPresent.values
 
 # Not using codesum for this benchmark (axis = 1 refer to rows)
 weather = weather.drop('CodeSum', axis=1) 
@@ -59,45 +60,50 @@ weather = weather.replace('  T', -1)
 
 
 # add month and day
-X_train['month'] = X_train.Date.apply(create_month)
-X_train['day'] = X_train.Date.apply(create_day)
+X['month'] = X.Date.apply(create_month)
+X['day'] = X.Date.apply(create_day)
 X_test['month'] = X_test.Date.apply(create_month)
 X_test['day'] = X_test.Date.apply(create_day)
 
 # Add integer latitude/longitude columns
-X_train['Lat_int'] = X_train.Latitude.apply(int)
-X_train['Long_int'] = X_train.Longitude.apply(int)
+X['Lat_int'] = X.Latitude.apply(int)
+X['Long_int'] = X.Longitude.apply(int)
 X_test['Lat_int'] = X_test.Latitude.apply(int)
 X_test['Long_int'] = X_test.Longitude.apply(int)
 
 # drop address columns
-X_train = X_train.drop(['Address', 'AddressNumberAndStreet','WnvPresent', 'NumMosquitos'], axis = 1)
+X = X.drop(['Address', 'AddressNumberAndStreet','WnvPresent', 'NumMosquitos'], axis = 1)
 X_test = X_test.drop(['Id', 'Address', 'AddressNumberAndStreet'], axis = 1)
 
 # Merge with weather data
-X_train = X_train.merge(weather, on='Date')
+X = X.merge(weather, on='Date')
 X_test = X_test.merge(weather, on='Date')
-X_train = X_train.drop(['Date'], axis = 1)
+X = X.drop(['Date'], axis = 1)
 X_test = X_test.drop(['Date'], axis = 1)
 
 # Convert categorical data (Species,Street,Trap) to numbers (because thats the algorithm input)
 lbl = preprocessing.LabelEncoder() 
-lbl.fit(list(X_train['Species'].values) + list(X_test['Species'].values))
-X_train['Species'] = lbl.transform(X_train['Species'].values)
+lbl.fit(list(X['Species'].values) + list(X_test['Species'].values))
+X['Species'] = lbl.transform(X['Species'].values)
 X_test['Species'] = lbl.transform(X_test['Species'].values)
 
-lbl.fit(list(X_train['Street'].values) + list(X_test['Street'].values))
-X_train['Street'] = lbl.transform(X_train['Street'].values)
+lbl.fit(list(X['Street'].values) + list(X_test['Street'].values))
+X['Street'] = lbl.transform(X['Street'].values)
 X_test['Street'] = lbl.transform(X_test['Street'].values)
 
-lbl.fit(list(X_train['Trap'].values) + list(X_test['Trap'].values))
-X_train['Trap'] = lbl.transform(X_train['Trap'].values)
+lbl.fit(list(X['Trap'].values) + list(X_test['Trap'].values))
+X['Trap'] = lbl.transform(X['Trap'].values)
 X_test['Trap'] = lbl.transform(X_test['Trap'].values)
 
 # drop columns with -1s (DataFrame.ix is used for index access)
-X_train = X_train.ix[:,(X_train != -1).any(axis=0)]
+X = X.ix[:,(X != -1).any(axis=0)]
 X_test = X_test.ix[:,(X_test != -1).any(axis=0)]
 
+
+# ******************************************
+# cross validation
+# ******************************************
+X_train, X_test, y_train, y_test = cross_validation.train_test_split(X, y_labels, test_size=0.2, random_state=0)
 
 # ******************************************
 # fit model 
@@ -105,20 +111,36 @@ X_test = X_test.ix[:,(X_test != -1).any(axis=0)]
 
 # Random Forest Classifier , n_estimators : number of decision trees
 #orig cause MemoryError clf = ensemble.RandomForestClassifier(n_jobs=-1, n_estimators=1000, min_samples_split=1)
-clf = ensemble.RandomForestClassifier(n_jobs=-1, n_estimators=800, min_samples_split=1)
-clf.fit(X_train, y_labels)
+clf = ensemble.RandomForestClassifier(n_jobs=-1, n_estimators=800)
+clf.fit(X_train, y_train)
+
+h_test = clf.predict(X_test)
+
+del1 = h_test - y_test # get mismatches between 0 / 1
+true_positive  = np.count_nonzero(np.bitwise_and(h_test,y_test))
+true_negative  = np.count_nonzero(np.bitwise_and(np.bitwise_not(h_test),np.bitwise_not(y_test)))
+false_positive = np.count_nonzero(np.bitwise_and(h_test,np.bitwise_not(y_test)))
+false_negative = np.count_nonzero(np.bitwise_and(np.bitwise_not(h_test),y_test))
+
+predicted_positive = (true_positive+false_positive)
+actual_positive = (true_positive+false_negative)
+precision = true_positive / predicted_positive              # 1 is best
+recall = true_positive / actual_positive                    # 1 is best
+score = 2*precision*recall/(precision+recall)               # 1 is best
+print("precision : %s \nrecall : %s \nscore : %s" % (precision , recall, score))
 
 # create predictions and submission file
 _predict_proba = clf.predict_proba(X_test)[:,1]
-h = clf.predict(X_test)
-sample['WnvPresent'] = _predict_proba
-sample.to_csv(root+'beat_the_benchmark.csv', index=False)
+# h = clf.predict(X_test)
+# sample['WnvPresent'] = _predict_proba
+# sample.to_csv(root+'beat_the_benchmark.csv', index=False)
 
 plt.subplot(2, 1, 1)
-plt.title('predicted prob for WnvPresent')
+plt.title('predicted prob for WnvPresent [test]')
 plt.plot(_predict_proba,'x')
 
 plt.subplot(2, 1, 2)
-plt.title('predicted WnvPresent')
-plt.plot(h,'x')
+plt.title('predicted WnvPresent [test]')
+plt.plot(h_test,'x')
 plt.show()
+
