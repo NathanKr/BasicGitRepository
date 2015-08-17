@@ -1,7 +1,3 @@
-"""
-Beating the Benchmark
-West Nile Virus Prediction @ Kaggle
-"""
 
 import pandas as pd
 import numpy as np
