@@ -124,31 +124,36 @@ sample_weight = X_train['NumMosquitos'];
 X.drop(['NumMosquitos'], axis = 1)
 X_test.drop(['NumMosquitos'], axis = 1)
 
-# Random Forest Classifier , n_estimators : number of decision trees
-##precision : 0.35555555555555557 
-##recall : 0.14035087719298245 
-##score : 0.2012578616352201
+algo = input("Please enter \nRandomForest : r or ENTER \nLogisticRegression : l \nSVM : s\n")
+
+
 #orig cause MemoryError clf = ensemble.RandomForestClassifier(n_jobs=-1, n_estimators=1000, min_samples_split=1)
-clf = ensemble.RandomForestClassifier(n_jobs=-1, n_estimators=400)
-clf.fit(X_train, y_train,sample_weight)
 
-
-#logistic regression
-#precision : 0.6666666666666666 
-#recall : 0.07017543859649122 
-#score : 0.12698412698412698
-#clf = linear_model.LogisticRegression()
-#clf.fit(X_train, y_train)
-
-# SVM
-#C=10 , changed also by 5 orders and got about the same
-##precision : 0.2549019607843137 
-##recall : 0.11403508771929824 
-##score : 0.15757575757575756
-##clf = SVC(C,probability=True) # use some like guassian kernel
-##clf.fit(X_train, y_train)
-
-
+if (algo == 'l'):
+    #logistic regression
+    #precision : 0.6666666666666666 
+    #recall : 0.07017543859649122 
+    #score : 0.12698412698412698
+    clf = linear_model.LogisticRegression()
+    clf.fit(X_train, y_train)
+    print ('l')
+elif (algo == 's'):
+    # SVM
+    ##precision : 0.2549019607843137 
+    ##recall : 0.11403508771929824 
+    ##score : 0.15757575757575756
+    C=10 #changed also by 5 orders and got about the same
+    clf = SVC(C,probability=True) # use some like guassian kernel
+    clf.fit(X_train, y_train)
+    print ('s')
+else:
+    # Random Forest Classifier , n_estimators : number of decision trees
+    ##precision : 0.35555555555555557 
+    ##recall : 0.14035087719298245 
+    ##score : 0.2012578616352201
+    clf = ensemble.RandomForestClassifier(n_jobs=-1, n_estimators=400)
+    clf.fit(X_train, y_train,sample_weight)
+    print ('r')
 
 h_test = clf.predict(X_test)
 
