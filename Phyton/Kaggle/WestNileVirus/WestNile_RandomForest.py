@@ -1,3 +1,12 @@
+"""
+========================
+West Nile Virus - Kaggle
+========================
+
+use : RandomForest or LogisticRegression or SVM
+"""
+print(__doc__)
+
 
 import pandas as pd
 import numpy as np
@@ -6,6 +15,7 @@ import matplotlib.pyplot as plt
 from sklearn import cross_validation
 from sklearn import linear_model
 from sklearn.svm import SVC
+from sklearn.learning_curve import learning_curve
 
 # ******************************************
 # prepare data : X \ X_test
@@ -40,8 +50,8 @@ sample = pd.read_csv(root+'sampleSubmission.csv')
 weather = pd.read_csv(root+'weather.csv')
 
 
-# Get y_labels
-y_labels = X.WnvPresent.values
+# Get y
+y = X.WnvPresent.values
 
 # Not using codesum for this benchmark (axis = 1 refer to rows)
 weather = weather.drop('CodeSum', axis=1) 
@@ -101,7 +111,7 @@ X_test['Trap'] = lbl.transform(X_test['Trap'].values)
 # drop columns with -1s (DataFrame.ix is used for index access)
 
 X = X.ix[:,(X != -1).any(axis=0)]
-X_test = X_test.ix[:,(X_test != -1).any(axis=0)]
+#X_test = X_test.ix[:,(X_test != -1).any(axis=0)]
 
 #X.drop(['NumMosquitos'], axis = 1)
 #X_test.drop(['NumMosquitos'], axis = 1)
@@ -111,7 +121,7 @@ X_test = X_test.ix[:,(X_test != -1).any(axis=0)]
 # cross validation
 # ******************************************
 X_train, X_test, y_train, y_test = \
-cross_validation.train_test_split(X, y_labels, test_size=0.2, random_state=0)
+cross_validation.train_test_split(X, y, test_size=0.2, random_state=0)
 
 # ******************************************
 # fit model 
@@ -122,6 +132,7 @@ cross_validation.train_test_split(X, y_labels, test_size=0.2, random_state=0)
 sample_weight = X_train['NumMosquitos'];
 
 X.drop(['NumMosquitos'], axis = 1)
+X_train.drop(['NumMosquitos'], axis = 1)
 X_test.drop(['NumMosquitos'], axis = 1)
 
 algo = input("Please enter \nRandomForest : r or ENTER \nLogisticRegression : l \nSVM : s\n")
@@ -136,7 +147,6 @@ if (algo == 'l'):
     #score : 0.12698412698412698
     clf = linear_model.LogisticRegression()
     clf.fit(X_train, y_train)
-    print ('l')
 elif (algo == 's'):
     # SVM
     ##precision : 0.2549019607843137 
@@ -145,7 +155,6 @@ elif (algo == 's'):
     C=10 #changed also by 5 orders and got about the same
     clf = SVC(C,probability=True) # use some like guassian kernel
     clf.fit(X_train, y_train)
-    print ('s')
 else:
     # Random Forest Classifier , n_estimators : number of decision trees
     ##precision : 0.35555555555555557 
@@ -153,7 +162,6 @@ else:
     ##score : 0.2012578616352201
     clf = ensemble.RandomForestClassifier(n_jobs=-1, n_estimators=400)
     clf.fit(X_train, y_train,sample_weight)
-    print ('r')
 
 h_test = clf.predict(X_test)
 
@@ -176,6 +184,7 @@ _predict_proba = clf.predict_proba(X_test)[:,1]
 # sample['WnvPresent'] = _predict_proba
 # sample.to_csv(root+'beat_the_benchmark.csv', index=False)
 
+plt.figure(1)
 plt.subplot(2, 1, 1)
 plt.title('predicted prob for WnvPresent [test]')
 plt.plot(_predict_proba,'x')
@@ -183,5 +192,19 @@ plt.plot(_predict_proba,'x')
 plt.subplot(2, 1, 2)
 plt.title('predicted WnvPresent [test]')
 plt.plot(h_test,'x')
-plt.show()
 
+
+
+# ******************************************
+# learning curves 
+# ******************************************
+
+train_sizes, train_scores, test_scores = \
+             learning_curve(clf, X, y,scoring='f1',cv=10, train_sizes=[ 0.01 , 0.1, 0.325, 0.55, 0.775, 1.])
+plt.figure(2)
+plt.plot(train_sizes,np.average(train_scores,axis=1),'or')
+plt.plot(train_sizes,np.average(test_scores,axis=1),'xg')
+plt.title('learning curves. average per train size on cross validation')
+plt.xlabel('train_sizes')
+plt.ylabel('train_scores : o , test_scores : x')
+plt.show()
