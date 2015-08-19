@@ -3,7 +3,17 @@
 West Nile Virus - Kaggle
 ========================
 
-use : RandomForest or LogisticRegression or SVM
+include :
+- data cleaning
+- cross validation
+- model fit (RandomForest or LogisticRegression or SVM)
+- learning curves 
+
+open issues :
+- why using learning_curve i have errors UndefinedMetricWarning about F-score is ill-defined 
+- why learning_curve does not provide same result as cross_validation for the largest train set in cv
+- how can i improve the score
+
 """
 print(__doc__)
 
@@ -18,7 +28,7 @@ from sklearn.svm import SVC
 from sklearn.learning_curve import learning_curve
 
 # ******************************************
-# prepare data : X \ X_test
+# data cleaning : X \ X_test_send_Kaggle
 # ******************************************
 
 
@@ -43,9 +53,9 @@ def getSepDate(x):
 
 # Load dataset
 root = ".\\Fresh\\"
-# X , X_test , sample , weather are type DataFrame 
+# X , X_test_send_Kaggle , sample , weather are type DataFrame 
 X = pd.read_csv(root+'train.csv')
-X_test = pd.read_csv(root+'test.csv')
+X_test_send_Kaggle = pd.read_csv(root+'test.csv')
 sample = pd.read_csv(root+'sampleSubmission.csv')
 weather = pd.read_csv(root+'weather.csv')
 
@@ -74,47 +84,47 @@ weather = weather.replace('  T', -1)
 # add month and day
 X['month'] = X.Date.apply(create_month)
 X['day'] = X.Date.apply(create_day)
-X_test['month'] = X_test.Date.apply(create_month)
-X_test['day'] = X_test.Date.apply(create_day)
+X_test_send_Kaggle['month'] = X_test_send_Kaggle.Date.apply(create_month)
+X_test_send_Kaggle['day'] = X_test_send_Kaggle.Date.apply(create_day)
 
 # Add integer latitude/longitude columns
 X['Lat_int'] = X.Latitude.apply(int)
 X['Long_int'] = X.Longitude.apply(int)
-X_test['Lat_int'] = X_test.Latitude.apply(int)
-X_test['Long_int'] = X_test.Longitude.apply(int)
+X_test_send_Kaggle['Lat_int'] = X_test_send_Kaggle.Latitude.apply(int)
+X_test_send_Kaggle['Long_int'] = X_test_send_Kaggle.Longitude.apply(int)
 
 # drop address columns
 #X = X.drop(['Address', 'AddressNumberAndStreet','WnvPresent', 'NumMosquitos'], axis = 1)
 X = X.drop(['Address', 'AddressNumberAndStreet','WnvPresent'],  axis = 1)
-X_test = X_test.drop(['Id', 'Address', 'AddressNumberAndStreet'], axis = 1)
+X_test_send_Kaggle = X_test_send_Kaggle.drop(['Id', 'Address', 'AddressNumberAndStreet'], axis = 1)
 
 # Merge with weather data
 X = X.merge(weather, on='Date')
-X_test = X_test.merge(weather, on='Date')
+X_test_send_Kaggle = X_test_send_Kaggle.merge(weather, on='Date')
 X = X.drop(['Date'], axis = 1)
-X_test = X_test.drop(['Date'], axis = 1)
+X_test_send_Kaggle = X_test_send_Kaggle.drop(['Date'], axis = 1)
 
 # Convert categorical data (Species,Street,Trap) to numbers (because thats the algorithm input)
 lbl = preprocessing.LabelEncoder() 
-lbl.fit(list(X['Species'].values) + list(X_test['Species'].values))
+lbl.fit(list(X['Species'].values) + list(X_test_send_Kaggle['Species'].values))
 X['Species'] = lbl.transform(X['Species'].values)
-X_test['Species'] = lbl.transform(X_test['Species'].values)
+X_test_send_Kaggle['Species'] = lbl.transform(X_test_send_Kaggle['Species'].values)
 
-lbl.fit(list(X['Street'].values) + list(X_test['Street'].values))
+lbl.fit(list(X['Street'].values) + list(X_test_send_Kaggle['Street'].values))
 X['Street'] = lbl.transform(X['Street'].values)
-X_test['Street'] = lbl.transform(X_test['Street'].values)
+X_test_send_Kaggle['Street'] = lbl.transform(X_test_send_Kaggle['Street'].values)
 
-lbl.fit(list(X['Trap'].values) + list(X_test['Trap'].values))
+lbl.fit(list(X['Trap'].values) + list(X_test_send_Kaggle['Trap'].values))
 X['Trap'] = lbl.transform(X['Trap'].values)
-X_test['Trap'] = lbl.transform(X_test['Trap'].values)
+X_test_send_Kaggle['Trap'] = lbl.transform(X_test_send_Kaggle['Trap'].values)
 
 # drop columns with -1s (DataFrame.ix is used for index access)
 
 X = X.ix[:,(X != -1).any(axis=0)]
-#X_test = X_test.ix[:,(X_test != -1).any(axis=0)]
+#X_test_send_Kaggle = X_test_send_Kaggle.ix[:,(X_test_send_Kaggle != -1).any(axis=0)]
 
 #X.drop(['NumMosquitos'], axis = 1)
-#X_test.drop(['NumMosquitos'], axis = 1)
+#X_test_send_Kaggle.drop(['NumMosquitos'], axis = 1)
 
 
 # ******************************************
@@ -180,7 +190,7 @@ print("precision : %s \nrecall : %s \nscore : %s" % (precision , recall, score))
 
 # create predictions and submission file
 _predict_proba = clf.predict_proba(X_test)[:,1]
-# h = clf.predict(X_test)
+# h = clf.predict(X_test_send_Kaggle)
 # sample['WnvPresent'] = _predict_proba
 # sample.to_csv(root+'beat_the_benchmark.csv', index=False)
 
@@ -200,11 +210,13 @@ plt.plot(h_test,'x')
 # ******************************************
 
 train_sizes, train_scores, test_scores = \
-             learning_curve(clf, X, y,scoring='f1',cv=10, train_sizes=[ 0.01 , 0.1, 0.325, 0.55, 0.775, 1.])
+             learning_curve(clf, X, y,scoring='f1',cv=5, train_sizes=[  0.1, 0.325, 0.55, 0.775, 1.])
 plt.figure(2)
+# should average but get zero , need to investigate
 plt.plot(train_sizes,np.average(train_scores,axis=1),'or')
 plt.plot(train_sizes,np.average(test_scores,axis=1),'xg')
 plt.title('learning curves. average per train size on cross validation')
+
 plt.xlabel('train_sizes')
 plt.ylabel('train_scores : o , test_scores : x')
 plt.show()
