@@ -13,6 +13,7 @@ open issues :
 - why using learning_curve i have errors UndefinedMetricWarning about F-score is ill-defined 
 - why learning_curve does not provide same result as cross_validation for the largest train set in cv
 - how can i improve the score
+- train_test results get worst for learning curves as number of sample is increased
 
 """
 print(__doc__)
@@ -219,4 +220,4 @@ plt.title('learning curves. average per train size on cross validation')
 
 plt.xlabel('train_sizes')
 plt.ylabel('train_scores : o , test_scores : x')
-plt.show()
+plt.draw()
