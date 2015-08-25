@@ -1,0 +1,69 @@
+/* 	------ script is run on Hortonwork sandbox on Azure 
+	------ compute max runs per year
+ 	------ load comma seperate file- Batting.csv which is under /user/hue 
+   	------ remark - script runs about 3 min 
+*/
+batting = LOAD 'Batting.csv' USING PigStorage(',');
+/*DESCRIBE batting */
+
+/* ------ runs_ds - extract 3 coulmns and name them, get e.g.
+    (aardsda01,2009,0)
+    (aardsda01,2010,0)
+    (aaronha01,1954,58)
+    ....
+*/
+runs_ds = FOREACH batting GENERATE $0 AS playerID , $1 AS year, $8 AS runs;
+/*DUMP runs_ds
+DESCRIBE runs_ds*/
+
+
+/* ------ grp_data - arrange rows of runs_ds by group of year , get e.g
+(1961,{(aaronha01,1961,115)})
+(1962,{(aaronto01,1962,54),(aaronha01,1962,127)})
+(1963,{(aaronha01,1963,121)})
+...
+*/
+grp_data = GROUP runs_ds BY (year);
+/*DUMP grp_data
+DESCRIBE grp_data*/
+
+
+/* ------ max_runs_ds -  arrange rows  by year and max_runs , get e.g.
+
+(1961,115.0)
+(1962,127.0)
+(1963,121.0)
+(1964,103.0)
+....
+*/
+max_runs_ds = FOREACH grp_data GENERATE group as grp,
+				MAX(runs_ds.runs) AS max_runs;
+/*DUMP max_runs_ds
+DESCRIBE max_runs_ds*/
+
+
+/* ---------- join_max_runs - join max_runs_ds and runs_ds by year and max_runs
+
+(1960,102.0,aaronha01,1960,102)
+(1961,115.0,aaronha01,1961,115)
+(1962,127.0,aaronha01,1962,127)
+(1963,121.0,aaronha01,1963,121)
+(1964,103.0,aaronha01,1964,103)
+
+*/
+join_max_runs = JOIN max_runs_ds BY ($0, max_runs), runs_ds BY (year, runs);
+
+
+/*DUMP join_max_runs
+DESCRIBE join_max_runs*/
+
+/*  ------  join_data : take year,playerID,runs from join_max_runs
+
+(1961,aaronha01,115.0)
+(1962,aaronha01,127.0)
+(1963,aaronha01,121.0)
+(1964,aaronha01,103.0)
+*/
+join_data = FOREACH join_max_runs GENERATE $0 AS year, $2 AS playerID, $1 AS runs;
+DUMP join_data;
+DESCRIBE join_data;
