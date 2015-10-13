@@ -1,6 +1,6 @@
 This is based on http://hortonworks.com/hadoop-tutorial/hands-on-tour-of-apache-spark-in-5-minutes/
 
-on linux sandbox :
+on hortonworks linux sandbox HDP 2.3_1 :
 
 // --- get some html file and save to HDFS via hadoop fs
 [root@sandbox ~] #  wget http://en.wikipedia.org/wiki/Hortonworks

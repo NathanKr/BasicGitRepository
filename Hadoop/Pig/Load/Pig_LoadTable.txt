@@ -1,7 +1,7 @@
 /* 	------ script is run on Hortonwork sandbox on Azure 
 	------ compute max runs per year
  	------ load a table batting_table which was create by importing batting.csv
-    	   via HCatalog UI	
+    	         to Hadoop via Hue->HCatalog->"Create new table from file"	
 	------ make sure  -useHCatalog is typed on "pig arguments" . hit enter !!!!
     
 */

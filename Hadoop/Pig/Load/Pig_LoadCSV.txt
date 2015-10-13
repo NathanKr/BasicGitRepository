@@ -1,6 +1,6 @@
 /* 	------ script is run on Hortonwork sandbox on Azure 
 	------ compute max runs per year
- 	------ load comma seperate file- Batting.csv which is under /user/hue 
+ 	------ load comma seperate file- Batting.csv which was loaded to /user/hue using Hue->File Browser
    	------ remark - script runs about 3 min 
 */
 batting = LOAD 'Batting.csv' USING PigStorage(',');

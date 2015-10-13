@@ -1,0 +1,45 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="${relativePackage}.${activityClass}" >
+
+   
+    <RadioGroup
+        android:id="@+id/radioGroup1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" >
+   
+
+    <RadioButton
+        android:id="@+id/rbGPS"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/tvLongitude"
+        android:layout_marginTop="58dp"
+        android:text="GPS Location Provider" />
+
+    <RadioButton
+        android:id="@+id/rbMock"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/rbGPS"
+        android:layout_marginTop="20dp"
+        android:text="Mock Location Provider" />
+    
+     </RadioGroup>
+
+    <Button
+        android:id="@+id/btGetLocation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignRight="@+id/radioGroup1"
+        android:layout_below="@+id/radioGroup1"
+        android:layout_marginRight="36dp"
+        android:layout_marginTop="36dp"
+        android:onClick="Clicked"
+        android:text="Get Locations" />
+
+</RelativeLayout>
