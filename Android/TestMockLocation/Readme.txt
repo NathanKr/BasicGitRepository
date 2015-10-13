@@ -1,3 +1,3 @@
 app is based on TestFakeLocationProvider but :
-- only Mock here
-- Mock is in seperated class
+- only MockLocationProvider here
+- MockLocationProvider is in seperated class ans is feed list of location which is injected to LocationManager
