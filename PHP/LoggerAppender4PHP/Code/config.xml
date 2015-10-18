@@ -1,0 +1,16 @@
+<configuration xmlns="http://logging.apache.org/log4php/">
+ 	<appender name="myAppenderRollingFile" class="LoggerAppenderRollingFile">
+        <layout class="LoggerLayoutPattern">
+            <param name="conversionPattern" value="%date %file : %line [%logger] %message%newline" />
+        </layout>
+        <param name="file" value="E:\wamp\www\TryLogger4PHP\file.log" />
+        <param name="maxFileSize" value="1MB" />
+        <param name="maxBackupIndex" value="5" />
+    </appender>
+    
+	<root>
+        <level value="ERROR" />
+        <appender_ref ref="myAppenderRollingFile" />
+    </root>
+	
+ 	</configuration>
