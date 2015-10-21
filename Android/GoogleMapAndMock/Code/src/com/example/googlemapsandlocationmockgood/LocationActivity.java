@@ -1,3 +1,12 @@
+/*
+ * Code by Nathan Krasney natankrasney@gmail.com
+ * 
+ * First Version 21/10/15 
+ */
+
+
+
+
 package com.example.googlemapsandlocationmockgood;
 
 
