@@ -1,0 +1,2 @@
+- GoogleMap with MockLocationProvider
+- Activity is not service
