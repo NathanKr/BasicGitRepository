@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html >
+    <head>
+        <title>jQuery - play</title>
+		
+		<script type="text/javascript" src="jquery.min.js"></script>
+		<script type="text/javascript" src="jquery-ui/jquery-ui.js"></script>
+		
+		<link  href="jquery-ui/jquery-ui.css" rel="stylesheet">
+		
+		<style type="text/css">
+		</style>
+    </head>
+	
+    <body>   
+		<iframe id="myIframe">
+		
+		</iframe>
+		<script type="text/javascript">	
+			var strHTMLFile="" ,strBody, strStyle,strBodyHTML,strBodyJavaScript;
+			
+			var ifrm ; // your iframe
+			var iwind ;                         // the iframe's window
+
+			
+			strBodyHTML="<p id='myP'>Hello World</p>";
+			strStyle= "body {font-size:25px;}";
+			strBodyJavaScript = "alert(\"hello js\");";
+		
+			strHTMLFile = "<html>"+
+								"<head>"+
+									"<style type='text/css'>"+
+										strStyle+
+									"</style>"+
+								"</head>"+
+								"<body>"+
+									strBodyHTML+
+								"</body>"+
+							"</html>";
+		
+		
+			$("iframe").attr("srcdoc",strHTMLFile);
+			
+			ifrm = document.getElementById("myIframe");
+			iwind = ifrm.contentWindow;
+			//iwind.eval("document.getElementById('myP').innerHTML='was changed'");    
+			iwind.eval("alert (document.getElementById('myP'))");    
+			
+		</script>
+
+    </body>
+</html>

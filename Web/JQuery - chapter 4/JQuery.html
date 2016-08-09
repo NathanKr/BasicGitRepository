@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html >
+    <head>
+        <title>jQuery</title>
+		
+		<script type="text/javascript" src="jquery.min.js"></script>
+		<script type="text/javascript" src="jquery-ui/jquery-ui.js"></script>
+		
+		<link  href="jquery-ui/jquery-ui.css" rel="stylesheet">
+		
+		<style type="text/css">
+			body
+			{
+				margin:0;
+				padding:0;
+				font-family : "Helvetica Neue", Helvetica, Arial;
+			}
+			
+			.clear_both
+			{
+				clear:both;
+			}
+			
+			
+			/*
+			
+				********* Top menu ********* 
+			
+			*/
+			
+			
+			#top
+			{
+				position:absolute;
+				width:100%;
+				height:40px;
+				background-color:#EEEEEE;
+			}
+			
+			
+			
+			#middleBar
+			{
+				margin: auto;
+				width:250px;
+				height:30px;
+				position:relative;
+				top:4px;
+			}
+			
+			
+			.menuitem
+			{
+				padding : 0 10px;
+				height:30px;
+				text-align: center;
+				vertical-align: middle;
+				line-height: 30px;       /* the same as your div height */
+				float:left;
+				font-size:13px;
+				cursor:pointer;
+				border-top : 1px rgb(204, 204, 204) solid;
+				border-bottom : 1px rgb(204, 204, 204) solid;
+				border-right : 1px rgb(204, 204, 204) solid;
+			}
+			
+			.MenuItemPressed
+			{
+				background-color:rgb(235, 244, 255);
+			}
+			
+			.MenuItemNotPressed
+			{
+				background-color:rgb(238, 238, 238);
+			}
+			
+			#divMenuItemHTML
+			{
+				border-left : 1px rgb(204, 204, 204) solid;
+				border-radius : 4px 0 0 4px;
+			}
+			
+			
+			
+			#divMenuItemOutput
+			{
+				border-radius : 0 4px 4px 0;
+			}
+			
+			
+			/*
+			
+				********* Bottom  ********* 
+			
+			*/
+			
+			
+			#bottom
+			{
+				width:100%;	
+				position:absolute;
+				top:40px;
+			}
+			
+			.divBottomCommon
+			{
+				float:left;
+				width:100%;
+				height:100%;
+			}
+			
+			#divBottomHTML
+			{
+				
+			}
+			
+			#divBottomCSS
+			{
+				
+			}
+			
+			#divBottomJavaScript
+			{
+				
+			}
+			
+			#divBottomOutput
+			{
+				
+			}
+			
+			textarea
+			{
+				width:100%;
+				height:100%;
+				padding:0;
+				resize:none;
+				overflow:hidden;
+			}
+			
+			iframe
+			{
+				width:100%;
+				height:100%;
+				border:none;
+				overflow:hidden;
+			}
+		</style>
+    </head>
+	
+    <body>   
+		
+		<div id="top">
+			<div id="middleBar">
+				<div id="divMenuItemHTML" class="menuitem menuitemborder MenuItemNotPressed">
+					HTML
+				</div>
+				<div id="divMenuItemCSS" class="menuitem menuitemborder MenuItemNotPressed">
+					CSS
+				</div>
+				<div id="divMenuItemJavaScript" class="menuitem menuitemborder MenuItemNotPressed" >
+					JavaScript
+				</div>
+				<div id="divMenuItemOutput" class="menuitem MenuItemNotPressed">
+					Output
+				</div>
+			</div>
+		</div>
+		
+		
+		<div class="clear_both">
+		
+		</div>
+		
+		<div id="bottom">
+			<div id="divBottomHTML" class="divBottomCommon">
+				<textarea>
+					
+				</textarea>
+			</div>
+
+			<div id="divBottomCSS" class="divBottomCommon">
+				<textarea>
+					
+				</textarea>
+			</div>	
+		
+			<div id="divBottomJavaScript" class="divBottomCommon">
+				<textarea>
+					
+				</textarea>
+			</div>
+		
+			<div id="divBottomOutput" class="divBottomCommon">
+				<iframe id="myIframe">
+					
+				</iframe>
+			</div>
+		</div>
+		
+		
+		<script type="text/javascript">	
+			var nClickedItems=0 , 
+				classMenuItemNotPressed="MenuItemNotPressed",
+				classMenuItemPressed = "MenuItemPressed",
+				bottomHeight = $(window).height() - $("#top").height();
+			
+			
+			$("#bottom").height(bottomHeight);
+			
+			updateClickedItems();
+			
+			 $("#bottom").find("textarea").on("change keyup paste", function() {
+				iframeShowHtml();
+			});
+			
+			
+			function iframeShowHtml()
+			{
+				var iframe = $("#divBottomOutput").find("iframe"),strStyle,strBodyHTML,strJavaScript;
+				
+				strBodyHTML = $("#divBottomHTML").find("textarea").val();
+				strStyle = $("#divBottomCSS").find("textarea").val();
+				strJavaScript = $("#divBottomJavaScript").find("textarea").val();
+				
+				strHTMLFile = "<html>"+
+								"<head>"+
+									"<style type='text/css'>"+
+										strStyle+
+									"</style>"+
+								"</head>"+
+								"<body>"+
+									strBodyHTML+
+								"</body>"+
+							"</html>";
+		
+		
+				iframe.attr("srcdoc",strHTMLFile);
+				
+				
+				var ifrm = document.getElementById("myIframe");
+				iwind = ifrm.contentWindow;
+				iwind.eval(strJavaScript);  
+
+			}
+			
+			$(".menuitem").click(function()
+			{
+				if( ($(this).hasClass(classMenuItemNotPressed)))
+				{
+					$(this).removeClass(classMenuItemNotPressed);
+					$(this).addClass(classMenuItemPressed);
+					nClickedItems++;
+				}
+				else
+				{
+					$(this).removeClass(classMenuItemPressed);
+					$(this).addClass(classMenuItemNotPressed);
+					nClickedItems--;
+				}
+				
+				
+				updateClickedItems();
+			});
+			
+			function updateClickedItems()
+			{
+				var nWidthPercent = "0" , strIdTop,strIdBottom; 
+				if(nClickedItems > "0")
+				{
+					nWidthPercent =parseInt("100"/nClickedItems);
+				}
+				
+				$(".menuitem").each(function( index ) {
+					var elementBottom;
+					strIdTop = $(this).attr("id");
+					strIdBottom = getBottomIdFromTop(strIdTop);
+				
+					elementBottom = $("#"+strIdBottom);
+					
+					
+					
+					if($(this).hasClass(classMenuItemPressed))
+					{
+						elementBottom.css("width",nWidthPercent+"%");
+						elementBottom.css("visibility","visible");
+					}
+					else
+					{
+						elementBottom.css("width","0");
+						elementBottom.css("visibility","hidden");
+					}
+					
+				});
+			}
+			
+			function getBottomIdFromTop(strTopId)
+			{
+				var divBottom = "divBottom" , divMenuItem="divMenuItem";
+				return strTopId.replace(divMenuItem , divBottom);
+			}
+			
+		</script>
+
+    </body>
+</html>

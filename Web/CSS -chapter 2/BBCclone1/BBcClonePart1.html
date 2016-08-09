@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>BBC New Clone</title>
+		
+		<style type="text/css">
+			body , div , p 
+			{
+				margin:0px;
+				padding:0px;
+			}
+			
+			
+		
+			.upper_sections_width_text
+			{
+				width:95%;
+			}
+			
+			.clear_float_both
+			{
+				clear:both;
+			}
+			
+			
+			
+			.no_border
+			{
+				border:none !important;/* -------- override -------- */
+			}
+			
+			
+			
+			
+			#Asada_bug_bottom_right_top_right_div
+			{
+				padding:0 0 0 120px;
+				marging:0;
+				position:relative;
+				top:-60px;
+			}
+			
+			#Asada_bug_bottom_right_top_right_div a
+			{
+				font-weight: bold;
+				color:black;
+			}
+			
+			#Asada_bug_bottom_right_top_right_div a:hover
+			{
+				color:#96CAEB;;
+			}
+			
+			#Asada_bug_bottom_right p
+			{
+				padding:0 0 0 130px;
+				margin:0;
+				position:relative;
+				top:-55px;
+			}
+			
+			
+			
+			
+			#Asada_bug_bottom_right
+			{
+				float:left;
+				position:relative;
+				top:-60px;
+				width:30%;
+				height:500px;
+				border-left : 1px grey solid;
+				padding-left : 10px;
+			}
+			
+			#Asada_bug_bottom_right h3
+			{
+				margin:0px;
+				padding:0px;
+				font-weight:normal;
+				font-size:24px;
+			}
+			
+			#Asada_bug_bottom_left_img
+			{
+				float:left;
+				margin-right:10px;
+			}
+			
+			/* -------- red horizontal line below date ------------ */
+			#red_horizontal_line_below_date
+			{
+				width:40px;
+				height:1px;
+				border-bottom:1px  #BB1919 solid; 
+				margin:3px 0;
+			}
+			
+			
+			/* --------  section : Asada_bug_bottom_left_link_img -------- */
+			#Asada_bug_bottom_left_link_img
+			{
+				float:left;
+			}
+			
+			
+			
+			/* --------  section : Asada_bug_bottom -------- */
+			#Asada_bug_bottom
+			{
+				margin:auto;
+			}
+			
+			/* --------  section : Asada_bug_bottom_left -------- */
+			#Asada_bug_bottom_left
+			{
+				width:25%;
+				font-size:14px;
+				font-family: Helvetica, Arial, sans-serif;
+				float:left;
+			}
+			
+			#Asada_bug_bottom_left p
+			{
+				line-height: 1.5;
+			}
+			
+			.Asada_bug_bottom_left_link
+			{
+				padding:5px 0px;
+			}
+			
+			.Asada_bug_bottom_left_link:hover
+			{
+				color:blue;
+			}
+			
+			#Asada_bug_bottom_left div
+			{
+				font-size:13px;
+			}
+			
+			.Asada_bug_bottom_left_2hours_Technology
+			{
+				width:100px;
+				float:left;
+				text-align:center;
+				margin : 5px 0px;
+			}
+			
+			#Asada_bug_bottom_left_2hours_Technology_boder
+			{
+				border-right:1px grey solid
+			}
+			
+			#Asada_bug_bottom_left_2hours_Technology_a
+			{
+					 color:#BB1919; 
+			}
+			
+			
+			#Asada_bug_bottom_left_2hours_Technology_a:hover
+			{
+					color:#96CAEB;
+			}
+			
+			/* -------- fifth section : Asada bug -------- */
+			
+			
+			#fifth_section_asada_bug
+			{
+				font-family: Helvetica, Arial, sans-serif;
+				font-size:24px;
+				font-weight:bold;
+				margin : 0px auto;
+			}
+			
+			#fifth_section_asada_bug a
+			{
+				color:rgb(104, 104, 104);
+			}
+			
+			#fifth_section_asada_bug a:hover
+			{
+				color:#1167AD;
+			}
+			/* -------- fourth section : Technology -------- */
+			
+			#fourth_section_text 
+			{
+				margin:auto;
+			}
+			
+			#fourth_section_text h2
+			{
+				width:110px;
+				font-family:Helvetica, Arial, sans-serif;
+				font-size:20px;
+				border-bottom : 4px #BB1919 solid;
+				margin:15px 0px;
+			}
+			
+			/* -------- third section : Home UK .... -------- */
+			#third_section
+			{
+				height:40px;
+				background-color:#A91717;
+			}
+			
+			#third_section_text
+			{
+				margin:auto;
+			}
+			
+			#third_section_text a
+			{
+				float:left;
+				font-family:Helvetica, Arial, sans-serif;
+				font-size:15px;
+				color:#F1FFFF;
+				margin: 12.5px 8px 12.5px 0px;
+				text-align:center;
+				border-right : 1px #BB1919 solid;
+				padding-right : 8px;
+			}
+
+			
+			
+			#third_section_drop_down
+			{
+				float:left;
+				width:80px;
+			}
+			
+			#third_section_drop_down:hover
+			{
+				background-color:black;
+			}
+			
+			#drop_down_arrow
+			{
+				margin: 10px 0px;
+				float:left;
+			}
+			
+			
+						
+		
+			/* -------- second section -------- */
+		
+			#second_section
+			{
+				width:100%;
+				height:50px;
+				background-color:#BB1919;
+				font-family:Helvetica, Arial, sans-serif;
+			}
+			
+			#second_section_text
+			{
+				margin:auto;
+			}
+			
+			#second_section_news
+			{
+				color:white;
+				font-size:40px;
+				float:left;
+			}
+			
+			#second_section_find_local_news
+			{
+				color:white;
+				font-size:19px;
+				float:right;
+				margin: 10.5px 40px 10.5px 0px;
+				border : 1px #B12A2A solid;
+				padding : 5px;
+			}
+			
+			#second_section_find_local_news:hover
+			{
+				text-decoration:underline;
+			}
+			
+			/* -------- first section -------- */
+
+			#first_section
+			{
+				margin:auto;
+			}
+			
+			
+			.first_section_common
+			{
+				float:left;
+				padding:13px 0px;
+				text-align:center;
+				font-family : Arial, Helvetica, freesans, sans-serif;
+				font-weight: bold;
+				font-size:13px;
+				color:black;
+				border-right:1px black solid;
+			}
+			
+			
+
+			.first_section_bbc_letter
+			{
+				color:white;
+				background-color:black;
+				font-size:130%;
+			}
+			
+			#first_section_bbc
+			{
+				float:left;
+				padding:10px 0px;
+				width:11%;
+				border-right:1px black solid;
+			}
+
+			#first_section_signin
+			{
+				width:17%;
+			}
+			
+			#first_section_signin:hover
+			{
+				border-bottom:4px #045FB4 solid;
+			}
+			
+			
+			#first_section_empty
+			{
+				width:6%;
+			}
+			
+			#first_section_empty:hover
+			{
+				border-bottom:4px black solid;
+			}
+			
+			
+			
+			
+			#first_section_news
+			{
+				width:6%;
+			}
+			
+			#first_section_sport
+			{
+				width:6%;
+			}
+			
+			#first_section_sport:hover
+			{
+				border-bottom:4px yellow solid;
+			}
+			
+			#first_section_weather
+			{
+				width:6%;
+			}
+			
+			#first_section_weather:hover
+			{
+				border-bottom:4px #add8e6 solid;
+			}
+			
+			
+			#first_section_iPlayer
+			{
+				width:6%;
+			}
+			
+			#first_section_iPlayer:hover
+			{
+				border-bottom:4px black solid;
+			}
+			
+			#first_section_TV
+			{
+				width:6%;
+			}
+			
+			#first_section_TV:hover
+			{
+				border-bottom:4px black solid;
+			}
+			
+			#first_section_Radio
+			{
+				width:6%;
+			}
+			
+			#first_section_Radio:hover
+			{
+				border-bottom:4px black solid;
+			}
+			
+			#first_section_More
+			{
+				width:7%;
+			}
+			
+			#first_section_More:hover
+			{
+				border-bottom:4px black solid;
+			}
+			
+			#first_section_Search_input
+			{
+				width:15%;
+				float:left;
+				margin:12px 0px 12px 5px;
+				background-color:#E4E4E4;
+			}
+
+			#first_section_Search_img
+			{
+				width:2%;
+				float:left;
+				margin:12px 0px;
+				background-color:#E4E4E4;
+			}
+
+			#first_section_Search_border
+			{
+				border-right:10px black solid;
+			}
+			
+			
+			
+			a
+			{
+				text-decoration:none;
+			}
+
+			
+			
+		</style>
+		
+		
+	</head>
+
+	<body>
+		<div id="first_section" class="upper_sections_width_text">
+			<a href="http://www.bbc.com/" id="first_section_bbc" >
+				<p>	
+					<span class ="first_section_bbc_letter">B</span>
+					<span class ="first_section_bbc_letter">B</span>
+					<span class ="first_section_bbc_letter">C</span>
+				</p>
+			</a>
+
+
+			<a href="https://ssl.bbc.co.uk/id/signin?ptrt=http%3A%2F%2Fwww.bbc.co.uk%2Fnews%2Ftechnology" 
+			id="first_section_signin" class="first_section_common">Sign In</a>
+			
+			<a href="http://www.bbc.com/news/technology#" id="first_section_empty" class="first_section_common">&nbsp</a>
+
+			<a href="http://www.bbc.com/news" id="first_section_news" class="first_section_common">News</a>
+
+			<a href="http://www.bbc.com/sport" id="first_section_sport" class="first_section_common">Sport</a>
+
+			<a href="http://www.bbc.com/weather/" id="first_section_weather" class="first_section_common">Weather</a>
+
+			<a href="http://www.bbc.co.uk/iplayer" id="first_section_iPlayer" class="first_section_common">iPlayer</a>
+
+			<a href="http://www.bbc.co.uk/tv" id="first_section_TV" class="first_section_common">TV</a>
+
+			<a href="http://www.bbc.co.uk/radio" id="first_section_Radio" class="first_section_common">Radio</a>
+
+			<a href="http://www.bbc.com/news/technology#orb-footer" id="first_section_More" 
+				class="first_section_common">More</a>
+			
+			<p id="first_section_Search_border">
+				<input type = "text" value="Search" id="first_section_Search_input">
+				<a href="http://www.bbc.co.uk/search?q=">
+					<img  src = "orb-search-dark.png"  id="first_section_Search_img">
+				</a>
+			</p>
+		
+		</div>
+		
+		<div class="clear_float_both"></div>
+
+		<div id="second_section">
+			<div id="second_section_text" class="upper_sections_width_text">
+				<p id="second_section_news">NEWS</p>
+				<a id="second_section_find_local_news">Find local news</a>
+			</div>
+		</div>	
+		
+		
+		
+		<div id="third_section">
+			<div id="third_section_text" class="upper_sections_width_text">
+				<a href="http://www.bbc.com/news" >Home</a>
+				<a href="http://www.bbc.com/news/uk">UK</a>
+				<a href="http://www.bbc.com/news/world">World</a>
+				<a href="http://www.bbc.com/news/business">Business</a>
+				<a href="http://www.bbc.com/news/politics">Politics</a>
+				<a href="">Tech</a>
+				<a href="http://www.bbc.com/news/science_and_environment">Science</a>
+				<a href="http://www.bbc.com/news/world/health">Health</a>
+				<a href="http://www.bbc.com/news/education">Education</a>
+				<a href="http://www.bbc.com/news/entertainment_and_arts">Entertainment & Arts</a>
+				<a href="http://www.bbc.com/news/video_and_audio/video">Video & Audio</a>
+				
+				
+				<div id="third_section_drop_down">
+					<a href="" class="no_border">More</a>
+					<img id="drop_down_arrow" src="More_drop_down_arrow_red.png">
+				</div>
+			</div>
+		</div>
+		
+		<div class="clear_float_both"></div>
+		
+		
+		<div id="fourth_section_text" class="upper_sections_width_text">
+			<h2>Technology</h2>
+		</div>
+		
+		<div id="fifth_section_asada_bug" class="upper_sections_width_text">
+				<h3>
+					<a href="http://www.bbc.com/news/technology-35350789">
+						Asda bug exposed payment details
+					</a>
+				</h3>
+		</div>
+		
+		<div id="Asada_bug_bottom" class="upper_sections_width_text">
+			<div id="Asada_bug_bottom_left">
+			<p>	Security vulnerabilities that put customers at risk have affected 
+				Asda's website for a couple of years, a security expert has revealed.
+			</p>
+			<div class ="Asada_bug_bottom_left_2hours_Technology"
+				 id="Asada_bug_bottom_left_2hours_Technology_boder">
+				2 hours ago
+			</div>
+			<div 	class ="Asada_bug_bottom_left_2hours_Technology" >
+				<a id="Asada_bug_bottom_left_2hours_Technology_a" 
+				href="http://www.completewebdevelopercourse.com/clone/index_files/index.html">
+					Technology
+				</a>
+			</div>
+			
+			<div class="clear_float_both"></div>
+			
+			<div id="red_horizontal_line_below_date"></div>
+			
+			<div class="Asada_bug_bottom_left_link">
+				<a href="http://www.bbc.com/news/technology-33409594">Surveillance firm hit in hack attack</a>
+			</div>
+			<div class="Asada_bug_bottom_left_link">
+				<a href="http://www.bbc.com/news/technology-29279213">eBay flaw has existed for months</a>
+			</div>	
+		</div>
+		
+			<a 	id="Asada_bug_bottom_left_img"
+				href="http://www.bbc.com/news/technology-35350789">
+				<img src="asada_bug.png">
+			</a> 
+		
+				
+			<div id="Asada_bug_bottom_right">
+				<h3>Watch/Listen</h3>
+				<a href="http://www.bbc.co.uk/programmes/p03fyd3z">
+						 <img src="movie1.png"> 
+				</a>
+				<div id="Asada_bug_bottom_right_top_right_div">
+					<a href="http://www.bbc.co.uk/programmes/p03fyd3z">
+						UK science chief backs blockchains
+					</a>
+				</div>
+					<p>1 hour ago</p>
+			</div>
+			
+		</div>
+		
+		
+		
+	</body>
+
+</html>
